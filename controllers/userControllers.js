@@ -2,13 +2,20 @@
 
 import userCollection from "../models/userModel.js"
 
-export const getAllUsers =async (req,res)=> {
+export const getAllUsers = async (req, res) => {
     const user = await userCollection.get();
     let users = []
     user.forEach((doc)=> {
         users.push({id :doc.id , ...doc.data()})
     })
-    res.status(200).json({users})
+
+    // (API) → JSON
+    if (req.headers.accept && req.headers.accept.includes("application/json")) {
+        return res.status(200).json({users})
+    }
+
+    //  EJS View
+    res.render("users/list", { title: "user list", users });
 }
 // get users by Id
 
